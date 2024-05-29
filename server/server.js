@@ -39,6 +39,7 @@ io.on("connection", (socket) => {
       io.emit("getUsers", users);
     }
   });
+  
 
   socket.on(
     "sendMessage",
@@ -63,19 +64,7 @@ io.on("connection", (socket) => {
               email: senderUser[0].email,
             },
           });
-      } else if(receiver === undefined){
-        io.to(sender.socketId)
-          .emit("getMessage", {
-            conversationId,
-            senderId,
-            message,
-            receiverId,
-            user: {
-              fullName: senderUser[0].user_name,
-              email: senderUser[0].email,
-            },
-          });
-      }
+      } 
     }
   );
 
@@ -178,7 +167,7 @@ app.post("/api/login", async (req, res) => {
 app.post("/api/conversation", async (req, res) => {
   const { senderId, receiverId } = req.body;
 
-  const values = [senderId, 2];
+  const values = [senderId, receiverId];
   console.log(senderId,receiverId);
 
   const addConversation = await dbHelper.createConversation(values);

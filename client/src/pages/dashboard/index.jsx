@@ -34,7 +34,7 @@ const Dashboard = () => {
       setMessages((prev) => ({
         ...prev,
         messages: [
-          ...prev.messages,
+          ...prev?.messages,
           { user: data.user, message: data.message, senderId:data.senderId },
         ],
       }));
