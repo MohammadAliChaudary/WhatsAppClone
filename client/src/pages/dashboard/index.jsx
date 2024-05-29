@@ -17,7 +17,7 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [socket, setSocket] = useState();
 
-  // console.log("messages >>>", messages);
+ 
 
   useEffect(() => {
     setSocket(io("http://localhost:8080"));
@@ -35,7 +35,7 @@ const Dashboard = () => {
         ...prev,
         messages: [
           ...prev.messages,
-          { user: data.user, message: data.message },
+          { user: data.user, message: data.message, senderId:data.senderId },
         ],
       }));
     });
@@ -76,15 +76,16 @@ const Dashboard = () => {
 
   const fetchMessages = async (conversationId, user) => {
     const loggedInUser = JSON.parse(localStorage.getItem("user:detail"));
+ 
+     const receiverId = user.user_id || user.receiverId
+
 
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/message/${conversationId}?senderId=${loggedInUser.id}&&receiverId=${user.receiverId}`
+        `http://localhost:3000/api/message/${conversationId}?senderId=${loggedInUser.id}&&receiverId=${receiverId}`
       );
 
-      console.log("res >>>", res);
       setMessages({ messages: res.data, receiver: user, conversationId });
-      // console.log("messages >>>", messages);
     } catch (error) {
       console.log("Error From fetching Messages", error);
     }
@@ -92,20 +93,24 @@ const Dashboard = () => {
 
   const sendMessage = async () => {
     console.log("messages >>>", messages);
+    const loggedInUser = JSON.parse(localStorage.getItem("user:detail"));
 
+console.log("loggedInUser >>>",loggedInUser);
     socket?.emit("sendMessage", {
       conversationId: messages?.conversationId,
-      senderId: user?.id,
+      senderId: loggedInUser?.id,
       message: message,
-      receiverId: messages?.receiver?.user_id,
+      receiverId: messages?.receiver?.user_id || messages?.receiver?.receiverId,
     });
 
+
+    
     try {
       const res = await axios.post("http://localhost:3000/api/message", {
         conversationId: messages?.conversationId,
-        senderId: user?.id,
+        senderId: loggedInUser?.id,
         message: message,
-        receiverId: messages?.receiver?.user_id,
+        receiverId:messages?.receiver?.user_id || messages?.receiver?.receiverId ,
       });
       console.log("res >>>", res);
     } catch (error) {
@@ -200,12 +205,13 @@ const Dashboard = () => {
               {messages !== undefined ? (
                 <React.Fragment>
                   {messages?.messages?.map((item, i) => {
-                    console.log("SenderId >>>", item.senderId);
-                    console.log("UserrID >>>", user.id);
-                    console.log("comparison >>>", item.senderId !== user.id);
+                    // console.log("messages >>>", item.senderId);
+                    // console.log("SenderId >>>", item.senderId);
+                    // console.log("UserrID >>>", user.id);
+                    // console.log("comparison >>>", item.senderId !== user.id);
                     return (
                       <div
-                        className={`sender ${item.senderId !== user.id ? " bg-[#efefef] text-black rounded-tr-x mr-auto" : "bg-[#3797f0]  text-white ml-auto rounded-tl-xl"} max-w-[40%]  rounded-b-xl  p-4 mb-6`}
+                        className={`sender ${item?.senderId !== user.id ? " bg-[#efefef] text-black rounded-tr-x mr-auto" : "bg-[#3797f0]  text-white ml-auto rounded-tl-xl"} max-w-[40%]  rounded-b-xl  p-4 mb-6`}
                       >
                         <p>{item.message}</p>
                       </div>
