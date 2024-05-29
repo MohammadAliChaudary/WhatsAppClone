@@ -1,0 +1,36 @@
+-- Creating User table 
+CREATE TABLE `user` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`user_name` VARCHAR(50) NOT NULL,
+	`email` VARCHAR(50) NOT NULL,
+	`password` VARCHAR(250) NOT NULL,
+	PRIMARY KEY (`id`)
+)
+COLLATE='utf8mb4_0900_ai_ci';
+
+
+ALTER TABLE `user`
+	ADD COLUMN `token` VARCHAR(250) NOT NULL AFTER `password`;
+
+
+-- Creating Conversation table 
+
+CREATE TABLE `conversation` (
+	`_id` INT NOT NULL AUTO_INCREMENT,
+	`user_id` INT NOT NULL,
+	`receiver_id` INT NOT NULL,
+	PRIMARY KEY (`_id`)
+)
+COLLATE='utf8mb4_0900_ai_ci';
+
+
+-- Creating table for Messages 
+
+CREATE TABLE `messages` ( `_id` INT NOT NULL AUTO_INCREMENT, `conversation_id` INT NOT NULL, `sender_id` INT NOT NULL, `message` VARCHAR(50) NOT NULL DEFAULT '', PRIMARY KEY (`_id`) ) COLLATE='utf8mb4_0900_ai_ci'
+
+
+-- Creating foregin key in messages table 
+
+ALTER TABLE `messages`
+	ADD CONSTRAINT `conversation_FK` FOREIGN KEY (`conversation_id`) REFERENCES `conversation` (`_id`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
