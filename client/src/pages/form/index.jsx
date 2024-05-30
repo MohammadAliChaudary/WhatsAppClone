@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../../components/input";
 import Button from "../../components/button";
 import Container from "../../components/container";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Form = ({ isLoginForm = false }) => {
   const navigate = useNavigate();
@@ -111,6 +111,25 @@ const Form = ({ isLoginForm = false }) => {
                 isLoginForm ? false : !(data.password === data.confirmPassword)
               }
             />
+            {isLoginForm ? (
+              <React.Fragment>
+                <div className=" text-[20px] font-semibold mt-3">
+                  Sign up{" "}
+                  <Link className=" text-blue-800" to={"/users/sign-up"}>
+                    here
+                  </Link>
+                </div>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <div className=" text-[20px] font-semibold mt-3">
+                  Already have an account Login
+                  <Link className=" text-blue-800 ml-1" to={"/users/sign-in"}>
+                    here
+                  </Link>
+                </div>
+              </React.Fragment>
+            )}
           </form>
         </div>
       </div>
