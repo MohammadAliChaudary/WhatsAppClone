@@ -30,28 +30,30 @@ const jwtHelper = require("./utils/jwtUtils");
 let users = [];
 io.on("connection", (socket) => {
   socket.on("addUser", (userId) => {
-    console.log("userId >>",userId);
+    console.log("userId >>", userId);
     const isUSerExist = users.find((user) => user.userId === userId);
-    console.log("isUSerExist >>>",!users.some((user) => user.userId === userId));
+    console.log(
+      "isUSerExist >>>",
+      !users.some((user) => user.userId === userId)
+    );
     if (!users.some((user) => user.userId === userId)) {
       const user = { userId, socketId: socket.id };
       users.push(user);
       io.emit("getUsers", users);
     }
   });
-  
 
   socket.on(
     "sendMessage",
     async ({ conversationId, senderId, message, receiverId }) => {
       console.log("data >>>", conversationId, senderId, message, receiverId);
-     
+
       const receiver = users.find((user) => user.userId === receiverId);
       const sender = users.find((user) => user.userId === senderId);
       const senderUser = await dbHelper.getUser("id", senderId);
       console.log("receiver", receiver);
       console.log("sender", sender);
-      if (receiver!== undefined) {
+      if (receiver !== undefined) {
         io.to(receiver.socketId)
           .to(sender.socketId)
           .emit("getMessage", {
@@ -64,7 +66,18 @@ io.on("connection", (socket) => {
               email: senderUser[0].email,
             },
           });
-      } 
+      } else {
+        io.to(sender.socketId).emit("getMessage", {
+          conversationId,
+          senderId,
+          message,
+          receiverId,
+          user: {
+            fullName: senderUser[0].user_name,
+            email: senderUser[0].email,
+          },
+        });
+      }
     }
   );
 
@@ -168,7 +181,7 @@ app.post("/api/conversation", async (req, res) => {
   const { senderId, receiverId } = req.body;
 
   const values = [senderId, receiverId];
-  console.log(senderId,receiverId);
+  console.log(senderId, receiverId);
 
   const addConversation = await dbHelper.createConversation(values);
 
@@ -200,13 +213,12 @@ app.get("/api/conversation/:userId", async (req, res) => {
     })
   );
 
-
   return res.status(200).json(await converSationUserData);
 });
 
 app.post("/api/message", async (req, res) => {
   const { conversationId, senderId, message, receiverId } = req.body;
-  console.log("Body >>>",req.body);
+  console.log("Body >>>", req.body);
 
   if (!senderId || !message) {
     return res.status(400).send("requirments is not completed ");
