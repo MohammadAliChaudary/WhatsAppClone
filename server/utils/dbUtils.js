@@ -190,12 +190,12 @@ const createConversation = (values) => {
 const storingMessagesInDB = (values) => {
   return new Promise((resolve, reject) => {
     const query =
-      "INSERT INTO messages (`conversation_id`,`sender_id`,`message`) values(?,?,?)";
+      "INSERT INTO messages (`conversation_id`,`sender_id`,`message`,date) values(?,?,?,?)";
     db.query(query, values, (err, result) => {
       if (err) {
         return reject(err);
       } else {
-        return resolve("success");
+        return resolve(result);
       }
     });
   });
@@ -228,23 +228,50 @@ const getfilteredUsers = (value) => {
   });
 };
 
-const checkForConversation = (values) => {
+const //
+  checkForConversation = (values) => {
+    return new Promise((resolve, reject) => {
+      const query =
+        "SELECT * FROM conversation WHERE (user_id = ? AND receiver_id = ?) OR (user_id = ? AND receiver_id = ?)";
+      db.query(query, values, (err, result) => {
+        if (err) {
+          return reject(err);
+        } else {
+          return resolve(result);
+        }
+      });
+    });
+  };
+
+const updateMessage = (message, id, time) => {
   return new Promise((resolve, reject) => {
-    const query =
-      "SELECT * FROM conversation WHERE (user_id = ? AND receiver_id = ?) OR (user_id = ? AND receiver_id = ?)";
-    db.query(query, values, (err, result) => {
+    const query = "UPDATE messages SET message = ? , date = ? WHERE _id = ?";
+    db.query(query, [message, time, id], (err, result) => {
       if (err) {
         return reject(err);
       } else {
-        return resolve(result);
+        return resolve("success");
       }
     });
   });
 };
 
-// const checkConversation = await Conversation.find({members: {$all: [req.query.senderId,req.query.receiverId]}})
+const deleteMessage = (id) => {
+  return new Promise((resolve, reject) => {
+    const query = "DELETE FROM messages WHERE _id = ?";
+    db.query(query, [id], (err, result) => {
+      if (err) {
+        return reject(err);
+      } else {
+        return resolve("success");
+      }
+    });
+  });
+};
 
 module.exports = {
+  deleteMessage,
+  updateMessage,
   checkForConversation,
   getfilteredUsers,
   getConversation,

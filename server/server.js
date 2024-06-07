@@ -30,12 +30,7 @@ const jwtHelper = require("./utils/jwtUtils");
 let users = [];
 io.on("connection", (socket) => {
   socket.on("addUser", (userId) => {
-    console.log("userId >>", userId);
     const isUSerExist = users.find((user) => user.userId === userId);
-    console.log(
-      "isUSerExist >>>",
-      !users.some((user) => user.userId === userId)
-    );
     if (!users.some((user) => user.userId === userId)) {
       const user = { userId, socketId: socket.id };
       users.push(user);
@@ -45,14 +40,17 @@ io.on("connection", (socket) => {
 
   socket.on(
     "sendMessage",
-    async ({ conversationId, senderId, message, receiverId }) => {
-      console.log("data >>>", conversationId, senderId, message, receiverId);
-
+    async ({
+      conversationId,
+      senderId,
+      message,
+      receiverId,
+      date,
+      messageId,
+    }) => {
       const receiver = users.find((user) => user.userId === receiverId);
       const sender = users.find((user) => user.userId === senderId);
       const senderUser = await dbHelper.getUser("id", senderId);
-      console.log("receiver", receiver);
-      console.log("sender", sender);
       if (receiver !== undefined) {
         io.to(receiver.socketId)
           .to(sender.socketId)
@@ -61,6 +59,8 @@ io.on("connection", (socket) => {
             senderId,
             message,
             receiverId,
+            date,
+            messageId,
             user: {
               fullName: senderUser[0].user_name,
               email: senderUser[0].email,
@@ -72,6 +72,8 @@ io.on("connection", (socket) => {
           senderId,
           message,
           receiverId,
+          date,
+          messageId,
           user: {
             fullName: senderUser[0].user_name,
             email: senderUser[0].email,
@@ -80,6 +82,36 @@ io.on("connection", (socket) => {
       }
     }
   );
+
+  socket.on(
+    "updateMessage",
+    ({ updatedMessage, messageId, senderId, receiverId, time }) => {
+      const receiver = users.find((user) => user.userId === receiverId);
+      const sender = users.find((user) => user.userId === senderId);
+      if (receiver !== undefined) {
+        io.to(receiver.socketId).to(sender.socketId).emit("updateMessage", {
+          updatedMessage,
+          messageId,
+          time,
+        });
+      } else {
+        io.to(sender.socketId).emit("updateMessage", {
+          updatedMessage,
+          messageId,
+          time,
+        });
+      }
+    }
+  );
+
+  socket.on("deleteMessage", ({ receiverId }) => {
+    const receiver = users.find((user) => user.userId === receiverId);
+    if (receiver !== undefined) {
+      io.to(receiver.socketId).emit("deleteMessage", {
+        receiverId,
+      });
+    }
+  });
 
   socket.on("disconnect", () => {
     users = users.filter((user) => user.socketId !== socket.id);
@@ -181,7 +213,7 @@ app.post("/api/conversation", async (req, res) => {
   const { senderId, receiverId } = req.body;
 
   const values = [senderId, receiverId];
-  console.log(senderId, receiverId);
+  // console.log(senderId, receiverId);
 
   const addConversation = await dbHelper.createConversation(values);
 
@@ -192,7 +224,6 @@ app.post("/api/conversation", async (req, res) => {
 
 app.get("/api/conversation/:userId", async (req, res) => {
   const { userId } = req.params;
-  // console.log("I am here");
   const conversation = await dbHelper.getConversation(userId);
   // console.log("conversation >>>", conversation);
   const converSationUserData = Promise.all(
@@ -217,8 +248,8 @@ app.get("/api/conversation/:userId", async (req, res) => {
 });
 
 app.post("/api/message", async (req, res) => {
-  const { conversationId, senderId, message, receiverId } = req.body;
-  console.log("Body >>>", req.body);
+  const { conversationId, senderId, message, receiverId, date } = req.body;
+  // console.log("Body >>>", req.body);
 
   if (!senderId || !message) {
     return res.status(400).send("requirments is not completed ");
@@ -227,16 +258,15 @@ app.post("/api/message", async (req, res) => {
   if (conversationId === "new") {
     const conversationValues = [senderId, receiverId];
 
-    const creatingConversation = await dbHelper.createConversation(
-      conversationValues
-    );
+    const newValues = [senderId, receiverId, receiverId, senderId];
+    // console.log("newValues >>>>", newValues);
 
-    const newConversationId = creatingConversation.result.insertId;
+    const checkConversation = await dbHelper.checkForConversation(newValues);
 
-    // console.log("newConversationId >>>", newConversationId);
+    // console.log("checkConversationbbbbbbbbbbbbbbbbbbbb >>>", checkConversation);
 
-    if (creatingConversation.message === "success") {
-      const messageValues = [newConversationId, senderId, message];
+    if (checkConversation.length > 0) {
+      const messageValues = [checkConversation[0]._id, senderId, message, date];
 
       const storingMessageInDB = await dbHelper.storingMessagesInDB(
         messageValues
@@ -244,18 +274,36 @@ app.post("/api/message", async (req, res) => {
 
       console.log("storingMessageInDB >>>", storingMessageInDB);
 
+      if (storingMessageInDB) {
+        return res.status(200).send(storingMessageInDB);
+      }
+    } else {
+      const creatingConversation = await dbHelper.createConversation(
+        conversationValues
+      );
+
+      const newConversationId = creatingConversation.result.result.insertId;
+
+      const messageValues = [newConversationId, senderId, message, date];
+
+      const storingMessageInDB = await dbHelper.storingMessagesInDB(
+        messageValues
+      );
+
+      // console.log("storingMessageInDB >>>", storingMessageInDB);
+
       if (storingMessageInDB === "success") {
         return res.status(200).send("Message store successfully");
       }
     }
   }
 
-  const values = [conversationId, senderId, message];
+  const values = [conversationId, senderId, message, date];
 
   const storingMessageInDB = await dbHelper.storingMessagesInDB(values);
 
-  if (storingMessageInDB === "success") {
-    return res.status(200).send("Message store successfully");
+  if (storingMessageInDB) {
+    return res.status(200).json(storingMessageInDB);
   }
 });
 
@@ -263,7 +311,6 @@ app.get("/api/message/:conversationId", async (req, res) => {
   const { conversationId } = req.params;
   const { senderId, receiverId } = req.query;
   const values = [senderId, receiverId, receiverId, senderId];
-  // console.log("Ids >>>", senderId, receiverId);
 
   const checkMessages = async (conversationId) => {
     const messages = await dbHelper.getMessage(
@@ -277,6 +324,8 @@ app.get("/api/message/:conversationId", async (req, res) => {
           user: { email: user[0].email, fullName: user[0].user_name },
           message: message.message,
           senderId: message.sender_id,
+          date: message.date,
+          messageId: message._id,
         };
       })
     );
@@ -293,6 +342,28 @@ app.get("/api/message/:conversationId", async (req, res) => {
     }
   } else {
     checkMessages(conversationId);
+  }
+});
+
+app.put("/api/message", async (req, res) => {
+  const { message, id, time } = req.body;
+
+  const updateMessage = await dbHelper.updateMessage(message, id, time);
+
+  if (updateMessage === "success") {
+    return res.status(200).send("message updated successfully");
+  } else {
+    return res.status(500).send("Error in updating message");
+  }
+});
+
+app.delete("/api/message", async (req, res) => {
+  const { id } = req.body;
+
+  const deleteMessage = await dbHelper.deleteMessage(id);
+
+  if (deleteMessage === "success") {
+    return res.status(200).send("message deleted successfully");
   }
 });
 

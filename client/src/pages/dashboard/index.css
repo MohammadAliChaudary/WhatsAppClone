@@ -1,0 +1,79 @@
+.receiver>.drop-down {
+    left: 360px !important;
+}
+
+.sender>.drop-down {
+    right: 360px !important;
+}
+
+
+/* .message-wrapper:hover>.drop-down {
+    display: flex;
+} */
+
+.drop-down {
+    border-radius: 50%;
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 24px;
+    background: none;
+    /* display: none; */
+}
+
+.drop-down:hover {
+    background-color: #e3e3e3;
+    cursor: pointer;
+}
+
+
+
+.message-container:hover>.drop-down {
+    display: flex !important;
+}
+
+.drop-down-menu {
+    width: 180px;
+    padding: 8px;
+    /* border-radius: 15px;
+    position: absolute;
+    z-index: 99; */
+}
+
+
+.sender>.drop-down-menu {
+    right: 364px;
+    top: 34px;
+}
+
+
+.receiver>.drop-down-menu {
+    left: 364px;
+    top: 34px;
+}
+
+
+.dropdown-btn {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    align-items: center;
+    border-radius: 10px;
+
+}
+
+.dropdown-btn:hover {
+    background-color: #e3e3e3;
+    cursor: pointer;
+
+}
+
+.delete-btn {
+    color: red;
+}
+
+
+.input-container {
+    margin-bottom: 0 !important;
+}
