@@ -315,7 +315,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="w-[75%] bg-white h-full flex flex-col items-center justify-between ">
+        <div className="w-full bg-white h-full flex flex-col items-center justify-between ">
           {messages !== undefined ? (
             <div className="user-info w-[75%] h-[80px] shadow-lg mt-10 rounded-full bg-[#fff9f9e0] flex justify-between items-center px-5">
               <div className="flex cursor-pointer items-center   ">
