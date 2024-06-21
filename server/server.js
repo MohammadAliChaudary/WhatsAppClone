@@ -406,5 +406,4 @@ app.listen(3000, () => {
 
 // TODO
 // ui similar to whatsapp
-// profile View functionality
 // photo magnifier
