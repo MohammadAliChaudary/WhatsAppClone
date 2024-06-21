@@ -190,7 +190,7 @@ const createConversation = (values) => {
 const storingMessagesInDB = (values) => {
   return new Promise((resolve, reject) => {
     const query =
-      "INSERT INTO messages (`conversation_id`,`sender_id`,`message`,date) values(?,?,?,?)";
+      "INSERT INTO messages (`conversation_id`,`sender_id`,`message`,`date`,`time`) values(?,?,?,?,?)";
     db.query(query, values, (err, result) => {
       if (err) {
         return reject(err);

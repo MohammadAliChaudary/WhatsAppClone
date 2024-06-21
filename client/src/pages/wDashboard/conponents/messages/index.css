@@ -1,0 +1,47 @@
+.send-message-input {
+    border: none !important;
+    width: 100%;
+}
+
+.send-message-input:hover {
+    background: white !important;
+}
+
+.chat-area-container {
+    background-color: #faf6f4;
+    background-image: url('../../../../assets/images/wbg2.png');
+    background-position: center;
+}
+
+.space {
+    flex: 1 1 auto;
+    min-height: 12px;
+}
+
+.receiver-message-dropdown-btn {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition-duration: 0.2ms;
+    transition: all 0.1s 0.2s;
+    display: none;
+}
+
+
+.sender-message-dropdown-btn {
+    transform: scaleX(0);
+    transform-origin: right;
+    transition-duration: 0.2ms;
+    transition: all 0.1s 0.2s;
+    display: none;
+}
+
+
+.sender-message-inner:hover>div>.sender-message-dropdown-btn {
+    display: flex;
+    transform: scaleX(1);
+}
+
+.receiver-message-inner:hover>div>.receiver-message-dropdown-btn {
+    display: flex;
+    transform: scaleX(1);
+}

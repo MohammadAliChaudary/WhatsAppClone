@@ -13,11 +13,12 @@
 /* Track */
 ::-webkit-scrollbar-track {
   background: #fff;
+
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #fff;
+  background: #555;
   border-radius: 5px;
 }
 
@@ -26,6 +27,17 @@
   background: #555;
 }
 
+.chat-area::-webkit-scrollbar,
+.conversations::-webkit-scrollbar {
+  width: 4px !important;
+  height: 8px !important;
+}
+
+.chat-area::-webkit-scrollbar-button,
+.conversations::-webkit-scrollbar-button {
+  max-width: 10px !important;
+  max-height: 10px !important;
+}
 
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

@@ -45,6 +45,7 @@ io.on("connection", (socket) => {
       senderId,
       message,
       receiverId,
+      time,
       date,
       messageId,
     }) => {
@@ -59,8 +60,9 @@ io.on("connection", (socket) => {
             senderId,
             message,
             receiverId,
-            date,
+            time,
             messageId,
+            date,
             user: {
               fullName: senderUser[0].user_name,
               email: senderUser[0].email,
@@ -72,8 +74,9 @@ io.on("connection", (socket) => {
           senderId,
           message,
           receiverId,
-          date,
+          time,
           messageId,
+          date,
           user: {
             fullName: senderUser[0].user_name,
             email: senderUser[0].email,
@@ -248,7 +251,8 @@ app.get("/api/conversation/:userId", async (req, res) => {
 });
 
 app.post("/api/message", async (req, res) => {
-  const { conversationId, senderId, message, receiverId, date } = req.body;
+  const { conversationId, senderId, message, receiverId, date, time } =
+    req.body;
   // console.log("Body >>>", req.body);
 
   if (!senderId || !message) {
@@ -266,7 +270,13 @@ app.post("/api/message", async (req, res) => {
     // console.log("checkConversationbbbbbbbbbbbbbbbbbbbb >>>", checkConversation);
 
     if (checkConversation.length > 0) {
-      const messageValues = [checkConversation[0]._id, senderId, message, date];
+      const messageValues = [
+        checkConversation[0]._id,
+        senderId,
+        message,
+        date,
+        time,
+      ];
 
       const storingMessageInDB = await dbHelper.storingMessagesInDB(
         messageValues
@@ -282,9 +292,11 @@ app.post("/api/message", async (req, res) => {
         conversationValues
       );
 
-      const newConversationId = creatingConversation.result.result.insertId;
+      console.log("creatingConversation >>>", creatingConversation);
 
-      const messageValues = [newConversationId, senderId, message, date];
+      const newConversationId = creatingConversation.insertId;
+
+      const messageValues = [newConversationId, senderId, message, date, time];
 
       const storingMessageInDB = await dbHelper.storingMessagesInDB(
         messageValues
@@ -325,6 +337,7 @@ app.get("/api/message/:conversationId", async (req, res) => {
           message: message.message,
           senderId: message.sender_id,
           date: message.date,
+          time: message.time,
           messageId: message._id,
         };
       })
@@ -390,3 +403,8 @@ app.get("/api/user/:id", async (req, res) => {
 app.listen(3000, () => {
   console.log("listening to the Port ", 3000);
 });
+
+// TODO
+// ui similar to whatsapp
+// profile View functionality
+// photo magnifier

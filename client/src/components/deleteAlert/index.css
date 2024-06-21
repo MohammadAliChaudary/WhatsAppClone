@@ -1,0 +1,13 @@
+.delete-alert {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* .delete-alert>div>div>button:nth-of-type(1) {
+    border: solid 1px;
+    border-color: #105133;
+}
+
+.delete-alert>div>div>button:nth-of-type(2) {
+    border: solid 1px;
+    border-color: #cccccc;
+} */

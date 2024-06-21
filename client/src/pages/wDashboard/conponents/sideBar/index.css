@@ -1,0 +1,47 @@
+.side-bar-container {
+    width: 45px;
+    background-color: rgba(243, 243, 243);
+    overflow-x: hidden;
+    transition: all 0.2s;
+    position: relative;
+    z-index: 0;
+}
+
+.side-bar-container-open {
+    border-right: solid 1px #dfdfdf;
+
+    z-index: 10;
+    width: 200px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.top-sec-inner>div:first-of-type {
+    margin-bottom: 8px;
+}
+
+.top-sec-inner>div:first-of-type>.icon {
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.1s;
+}
+
+
+.top-sec-inner>div:first-of-type>.icon:hover {
+    background-color: rgb(235, 235, 235);
+}
+
+.bottom-sec>div,
+.top-sec-inner>div:not(:first-of-type) {
+    border-radius: 6px;
+    transition: all 0.1s;
+
+}
+
+
+
+
+.bottom-sec>div:hover,
+.top-sec-inner>div:not(:first-of-type):hover {
+    background-color: rgb(235, 235, 235);
+}
