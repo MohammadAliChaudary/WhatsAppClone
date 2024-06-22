@@ -276,8 +276,7 @@ const Messages = () => {
         ) : null}
         {viewDp ? <ViewImage image={avator} setViewImage={setViewDp} /> : null}
         <div
-          style={{ width: "-webkit-fill-available" }}
-          className={` messages-container flex flex-col absolute left-[525px] bg-[#fcfcfc] h-full w-full  `}
+          className={`flex-grow messages-container flex flex-col shrink-0 bg-[#fcfcfc] h-full `}
         >
           <header className="flex justify-between items-center border bg-white pr-4 pl-4 pt-[10px] pb-[10px]">
             <div className="flex justify-center items-center">
@@ -314,7 +313,7 @@ const Messages = () => {
           </header>
           <div className="pb-3 w-full h-full chat-area-container">
             <div className="chat-area relative w-full h-full overflow-y-scroll ">
-              <div className=" w-full pl-[165px] absolute top-0 bottom-0  h-full pr-[165px] flex flex-col max-xl:pl-[100px] max-xl:pr-[100px] max-lg:pl-[40px] max-lg:pr-[40px]">
+              <div className=" w-full pl-[165px] absolute top-0 bottom-0  h-full pr-[165px] flex flex-col max-xl:pl-[100px] max-xl:pr-[100px] max-[1055px]:pl-[40px] max-[1055px]:pr-[40px] max-[470px]:pl-[10px] max-[470px]:pr-[10px]">
                 <div className="space"></div>
                 <div className="w-full flex justify-center items-center mb-3">
                   <span className="flex justify-center items-center   p-1 rounded border border-[#feefd5] bg-[#feefd5] hover:border-[#dfd2bb] cursor-pointer">
@@ -545,7 +544,7 @@ const Messages = () => {
     return (
       <div
         style={{ width: "-webkit-fill-available" }}
-        className=" absolute flex flex-col justify-center items-center left-[525px] bg-[#fcfcfc] h-full"
+        className={` absolute flex flex-col justify-center items-center left-[525px] bg-[#fcfcfc] h-full ${receiver ? "" : "max-[940px]:hidden"} `}
       >
         <div className="flex flex-col justify-between h-full">
           <div className="h-[55%] flex items-end">

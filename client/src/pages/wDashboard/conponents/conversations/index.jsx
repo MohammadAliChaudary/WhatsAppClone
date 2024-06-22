@@ -32,7 +32,7 @@ const Conversation = ({ users }) => {
 
   return (
     <div
-      className={` absolute z-0 left-[45px] bg-[#fefefe] h-full w-[480px] min-w-[20%] border p-3`}
+      className={`  bg-[#fefefe] h-full w-[480px] min-w-[20%] border p-3 shrink-0 ${receiver ? " max-[940px]:hidden" : "max-[940px]:w-full"}`}
     >
       <div className="header mb-3">
         <div className="flex justify-between items-center p-1">

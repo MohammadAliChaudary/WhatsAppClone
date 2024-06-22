@@ -3,6 +3,7 @@ import Dashboard from "./pages/dashboard";
 import Form from "./pages/form";
 import "./App.css";
 import WhatsAppDashboard from "./pages/wDashboard";
+import Conversation from "./pages/wDashboard/conponents/conversations";
 function App() {
   const ProtectedRoutes = ({ children, auth = false }) => {
     const isLoggedIn = localStorage.getItem("user:token") !== null || false;

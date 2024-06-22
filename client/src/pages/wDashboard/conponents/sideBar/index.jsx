@@ -9,6 +9,7 @@ import SettingIcon from "../../../../assets/icons/delete";
 import avator from "../../../../assets/avator.jpg";
 import StarIcon from "../../../../assets/icons/star";
 import "./index.css";
+import { Link } from "react-router-dom";
 
 const SideBar = () => {
   const wrapperRef = useRef();
@@ -28,6 +29,11 @@ const SideBar = () => {
       text: "Chats",
       iconType: "svg",
       class: "svg-icon-tab",
+      onclick: () => {
+        localStorage.removeItem("receiver");
+        window.location.reload();
+      },
+      link: "/users/chats",
     },
     {
       icon: <PhoneIcon size={20} color={"#000"} />,
@@ -118,6 +124,9 @@ const SideBar = () => {
                     ) : null}
 
                     <div
+                      onClick={() => {
+                        item.onclick();
+                      }}
                       ref={item.ref ? item.ref : null}
                       className={`${item.class}  font-normal  mt-1 text-[14px] tabs w-full  flex justify-start items-center `}
                     >

@@ -28,8 +28,10 @@ const WhatsAppDashboard = () => {
   return (
     <div className=" w-full h-full flex flex-shrink-0   relative">
       <SideBar />
-      <Conversation users={users} />
-      <Messages />
+      <div className="flex w-full">
+        <Conversation users={users} />
+        <Messages />
+      </div>
     </div>
   );
 };
