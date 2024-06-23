@@ -28,6 +28,8 @@ const Messages = () => {
     JSON.parse(localStorage.getItem("user:detail"))
   );
 
+  let date = null;
+
   const receiver = localStorage.getItem("receiver");
 
   const [message, setMessage] = useState("");
@@ -173,6 +175,8 @@ const Messages = () => {
 
   const updateDBMessage = async () => {
     const time = timeFormatter();
+    const date = dateFromatter();
+
     const loggedInUser = JSON.parse(localStorage.getItem("user:detail"));
     try {
       const updateResult = await axios.put(
@@ -191,6 +195,7 @@ const Messages = () => {
         receiverId:
           messages?.receiver?.user_id || messages?.receiver?.receiverId,
         time: time,
+        date: date,
       });
     } catch (error) {
       console.log("error from updating message >>>>", error);
@@ -264,6 +269,18 @@ const Messages = () => {
     }
   }, []);
 
+  const checkDate = (myDate) => {
+    if (date !== myDate) {
+      console.log("date >>>", date);
+      console.log("myDate >>>", myDate);
+      date = myDate;
+
+      return false;
+    }
+
+    return true;
+  };
+
   if (messages) {
     return (
       <React.Fragment>
@@ -329,8 +346,16 @@ const Messages = () => {
                 </div>
                 {messages?.messages?.map((item, i) => (
                   <>
+                    {checkDate(item.date) === false ? (
+                      <div className="flex justify-center items-center w-full text-[13px]">
+                        <p className="pl-3 flex justify-center items-center pr-3 pt-1 pb-1 bg-[#edecec]  rounded ">
+                          {item.date}
+                        </p>
+                      </div>
+                    ) : null}
                     {item.senderId !== loggedInUser.id ? (
                       <div
+                        key={i}
                         className={` receiver-message w-full flex justify-start items-center mb-2 relative`}
                       >
                         <div className="receiver-message-inner  flex  justify-start items-center mb-2 relative  max-w-[65%] w-fit">

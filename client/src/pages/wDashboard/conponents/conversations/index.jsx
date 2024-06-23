@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import EditIcon from "../../../../assets/images/edit.svg";
 import menuIcon from "../../../../assets/images/menu.svg";
 import InputSearch from "../../../../components/searchInput";
@@ -7,8 +7,10 @@ import avator from "../../../../assets/avator.jpg";
 import axios from "axios";
 import useMessage from "../../../../hooks/useMessages";
 
-const Conversation = ({ users }) => {
+const Conversation = () => {
   const { setMessages } = useMessage();
+  const [users, setUsers] = useState([]);
+
   const receiver = localStorage.getItem("receiver");
 
   // console.log("Custom Hook >>>", messages, setMessages);
@@ -29,6 +31,24 @@ const Conversation = ({ users }) => {
       localStorage.setItem("receiver", JSON.stringify(user));
     }
   };
+
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem("user:detail"));
+
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/api/user/${loggedInUser.id}`
+        );
+
+        setUsers(res.data);
+      } catch (error) {
+        console.log("Error From fetching Users", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   return (
     <div

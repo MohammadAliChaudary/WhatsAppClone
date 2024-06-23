@@ -1,36 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import SideBar from "./conponents/sideBar";
-import Conversation from "./conponents/conversations";
-import Messages from "./conponents/messages/messages";
-import axios from "axios";
-
+import { Outlet } from "react-router-dom";
 const WhatsAppDashboard = () => {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem("user:detail"));
-
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:3000/api/user/${loggedInUser.id}`
-        );
-
-        setUsers(res.data);
-      } catch (error) {
-        console.log("Error From fetching Users", error);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
   return (
     <div className=" w-full h-full flex flex-shrink-0   relative">
       <SideBar />
       <div className="flex w-full">
-        <Conversation users={users} />
-        <Messages />
+        <Outlet />
       </div>
     </div>
   );

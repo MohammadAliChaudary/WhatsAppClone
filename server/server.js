@@ -251,9 +251,15 @@ app.get("/api/conversation/:userId", async (req, res) => {
 });
 
 app.post("/api/message", async (req, res) => {
-  const { conversationId, senderId, message, receiverId, date, time } =
-    req.body;
-  // console.log("Body >>>", req.body);
+  const {
+    conversationId = "new",
+    senderId,
+    message,
+    receiverId,
+    date,
+    time,
+  } = req.body;
+  console.log("Body >>>", req.body);
 
   if (!senderId || !message) {
     return res.status(400).send("requirments is not completed ");

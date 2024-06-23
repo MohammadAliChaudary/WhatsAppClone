@@ -8,9 +8,7 @@ import { MessageProvider } from "./contexts/messagesProvider.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
   <MessageProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <App />
   </MessageProvider>
   // {/* </React.StrictMode> */}
 );

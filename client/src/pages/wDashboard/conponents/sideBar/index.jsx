@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import MenuIcon from "../../../../assets/icons/menu";
 import ChatIcon from "../../../../assets/icons/chat";
 import PhoneIcon from "../../../../assets/icons/phone";
@@ -9,7 +10,6 @@ import SettingIcon from "../../../../assets/icons/delete";
 import avator from "../../../../assets/avator.jpg";
 import StarIcon from "../../../../assets/icons/star";
 import "./index.css";
-import { Link } from "react-router-dom";
 
 const SideBar = () => {
   const wrapperRef = useRef();
@@ -31,21 +31,22 @@ const SideBar = () => {
       class: "svg-icon-tab",
       onclick: () => {
         localStorage.removeItem("receiver");
-        window.location.reload();
       },
-      link: "/users/chats",
+      link: "/",
     },
     {
       icon: <PhoneIcon size={20} color={"#000"} />,
       text: "Calls",
       iconType: "svg",
       class: "svg-icon-tab",
+      link: "/calls",
     },
     {
       icon: <StatusIcon size={22} color={"#000"} />,
       text: "Status",
       iconType: "svg",
       class: "svg-icon-tab",
+      link: "/status",
     },
     {
       icon: aiIcon,
@@ -61,12 +62,14 @@ const SideBar = () => {
       text: "Starred messages",
       iconType: "svg",
       class: "svg-icon-tab",
+      link: "/StarredMessages",
     },
     {
       icon: <ArchievIcon size={22} color={"#0000"} />,
       text: "Archived chats",
       iconType: "svg",
       class: "svg-icon-tab",
+      link: "ArchivedChats",
     },
     {
       icon: <SettingIcon size={22} color={"#000"} />,
@@ -122,18 +125,102 @@ const SideBar = () => {
                     {item.iconType === "image" ? (
                       <hr className=" mt-2 mb-2" />
                     ) : null}
+                    {item.link ? (
+                      <Link
+                        to={item.link}
+                        onClick={() => {
+                          item.onclick();
+                        }}
+                        ref={item.ref ? item.ref : null}
+                        className={`${item.class}  font-normal  mt-1 text-[14px] tabs w-full  flex justify-start items-center `}
+                      >
+                        <div className="icon pl-2 pr-2 pt-2 pb-2 mr-2 shrink-0">
+                          {item.iconType === "image" ? (
+                            <img
+                              className="w-[20px] h-[20px]"
+                              src={item.icon}
+                              alt="AI Icon"
+                            />
+                          ) : (
+                            item.icon
+                          )}
+                        </div>
 
-                    <div
-                      onClick={() => {
-                        item.onclick();
-                      }}
-                      ref={item.ref ? item.ref : null}
+                        {item.text !== null ? (
+                          <div className="text shrink-0">
+                            <span>{item.text}</span>
+                          </div>
+                        ) : null}
+                      </Link>
+                    ) : (
+                      <div
+                        onClick={() => {
+                          item.onclick();
+                        }}
+                        ref={item.ref ? item.ref : null}
+                        className={`${item.class}  font-normal  mt-1 text-[14px] tabs w-full  flex justify-start items-center `}
+                      >
+                        <div className="icon pl-2 pr-2 pt-2 pb-2 mr-2 shrink-0">
+                          {item.iconType === "image" ? (
+                            <img
+                              className="w-[20px] h-[20px]"
+                              src={item.icon}
+                              alt="AI Icon"
+                            />
+                          ) : (
+                            item.icon
+                          )}
+                        </div>
+
+                        {item.text !== null ? (
+                          <div className="text shrink-0">
+                            <span>{item.text}</span>
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </div>
+          <div className="bottom-sec">
+            {bottomMenu.map((item, i) => {
+              return (
+                <React.Fragment>
+                  {i === 2 ? <hr className=" mt-2 mb-2" /> : null}
+                  {item.link ? (
+                    <Link
+                      reloadDocument={true}
+                      to={item.link}
                       className={`${item.class}  font-normal  mt-1 text-[14px] tabs w-full  flex justify-start items-center `}
                     >
                       <div className="icon pl-2 pr-2 pt-2 pb-2 mr-2 shrink-0">
                         {item.iconType === "image" ? (
                           <img
-                            className="w-[20px] h-[20px]"
+                            className="w-[22px] h-[22px]"
+                            src={item.icon}
+                            alt="AI Icon"
+                          />
+                        ) : (
+                          item.icon
+                        )}
+                      </div>
+
+                      {item.text !== null ? (
+                        <div className="text shrink-0">
+                          <span>{item.text}</span>
+                        </div>
+                      ) : null}
+                    </Link>
+                  ) : (
+                    <div
+                      className={`${item.class}  font-normal  mt-1 text-[14px] tabs w-full  flex justify-start items-center `}
+                    >
+                      <div className="icon pl-2 pr-2 pt-2 pb-2 mr-2 shrink-0">
+                        {item.iconType === "image" ? (
+                          <img
+                            className="w-[22px] h-[22px]"
                             src={item.icon}
                             alt="AI Icon"
                           />
@@ -148,38 +235,7 @@ const SideBar = () => {
                         </div>
                       ) : null}
                     </div>
-                  </React.Fragment>
-                );
-              })}
-            </div>
-          </div>
-          <div className="bottom-sec">
-            {bottomMenu.map((item, i) => {
-              return (
-                <React.Fragment>
-                  {i === 2 ? <hr className=" mt-2 mb-2" /> : null}
-
-                  <div
-                    className={`${item.class}  font-normal  mt-1 text-[14px] tabs w-full  flex justify-start items-center `}
-                  >
-                    <div className="icon pl-2 pr-2 pt-2 pb-2 mr-2 shrink-0">
-                      {item.iconType === "image" ? (
-                        <img
-                          className="w-[22px] h-[22px]"
-                          src={item.icon}
-                          alt="AI Icon"
-                        />
-                      ) : (
-                        item.icon
-                      )}
-                    </div>
-
-                    {item.text !== null ? (
-                      <div className="text shrink-0">
-                        <span>{item.text}</span>
-                      </div>
-                    ) : null}
-                  </div>
+                  )}
                 </React.Fragment>
               );
             })}
